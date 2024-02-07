@@ -43,7 +43,7 @@ classifiers = [
 version = {attr = "cygl.__version__"}
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["cython_src"]
 
 [tool.setuptools_scm]
 

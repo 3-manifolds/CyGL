@@ -2,7 +2,6 @@
 from libc.math cimport sqrt
 
 cdef class vec3():
-    cdef float _v[3]
 
     def __init__(self, float x, float y, float z):
         self._v[0] = x

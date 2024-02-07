@@ -4,4 +4,5 @@ __pycache__
 *.pyc
 *.egg-info
 *.whl
-cython_src/*.c
+cython_src/cygl/
+*.c

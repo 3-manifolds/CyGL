@@ -34,31 +34,46 @@ elif sys.platform == 'win32':
 elif sys.platform == 'linux':
     OpenGL_extra_link_args = ['-lGL']
 
-extensions = cythonize(
+extensions = cythonize([
+    # cythonize accepts a list of Extensions but their sources list must have
+    # length 1.
     Extension(
-        "cygl.legacy",
-        ["cython_src/legacy.pyx"],
+        name="cygl.legacy",
+        sources=["cython_src/cygl/legacy.pyx"],
         include_dirs=OpenGL_includes,
         extra_link_args=OpenGL_extra_link_args,
-        )
-    )
-
-extensions += cythonize(
+        ),
     Extension(
-        "cygl.vertex_array",
-        ["cython_src/vertex_array.pyx"],
+        name="cygl.algebra3d",
+        sources=["cython_src/cygl/algebra3d.pyx"],
+        ),
+    Extension(
+        name="cygl.vertex_array",
+        sources=["cython_src/cygl/vertex_array.pyx"],
         include_dirs=OpenGL_includes,
         extra_link_args=OpenGL_extra_link_args,
-        )
-    )
+        ),
+    ])
 
-extensions += cythonize(
-    Extension(
-        "cygl.algebra3d",
-        ["cython_src/algebra3d.pyx"]
-        )
-    )
+# extensions += cythonize(
+#     Extension(
+#         "cygl.vertex_array",
+#         ["cython_src/vertex_array.pyx"],
+#         include_dirs=OpenGL_includes,
+#         extra_link_args=OpenGL_extra_link_args,
+#         ),
+#         "cython_src/algebra3d.pyx"
+#     )
+
+# extensions += cythonize(
+#     Extension(
+#         "cygl.algebra3d",
+#         ["cython_src/algebra3d.pyx"]
+#         )
+#     )
 
 setup(
-    ext_modules = extensions
+    ext_modules=extensions,
+    packages=['cygl'],
+    package_dir={'cygl':'cython_src/cygl'}
 )

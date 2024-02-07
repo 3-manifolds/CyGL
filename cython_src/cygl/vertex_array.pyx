@@ -1,17 +1,20 @@
 # cython: language_level=3str
 
-class VertexArray():
+from cygl.algebra3d cimport vec3
+
+cdef class VertexArray():
     """An OpenGL Vertex Array."""
 
     attribute_defaults = {
         'vec1' : (0.0),
         'vec2' : (0.0, 0.0),
-        'vec3' : (0.0, 0.0, 0.0),
+        'vec3' : vec3(0.0, 0.0, 0.0),
         'vec4' : (0.0, 0.0, 0.0, 1.0),
         'rgba' : (0.0, 0.0, 0.0, 1.0)
         }
         
     def __init__(self, **kwargs):
+        cdef vec3 mytest
         self.attribute_types = kwargs
         for value in self.attribute_types.values():
             if value not in self.attribute_defaults:
