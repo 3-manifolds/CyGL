@@ -38,8 +38,14 @@ extensions = cythonize([
     # cythonize accepts a list of Extensions but their sources list must have
     # length 1.
     Extension(
-        name="cygl.legacy",
-        sources=["src/cygl/legacy.pyx"],
+        name="cygl.obsolete",
+        sources=["src/cygl/obsolete.pyx"],
+        include_dirs=OpenGL_includes,
+        extra_link_args=OpenGL_extra_link_args,
+        ),
+    Extension(
+        name="cygl.common",
+        sources=["src/cygl/common.pyx"],
         include_dirs=OpenGL_includes,
         extra_link_args=OpenGL_extra_link_args,
         ),

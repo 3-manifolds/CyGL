@@ -1,9 +1,9 @@
 import tkinter
 from tkinter import ttk
 from tkinter_gl import GLCanvas
-from cygl.legacy import (glClear, glClearColor, glBegin, glEnd,
-    glVertex2d, glViewport, glGetError, GL_COLOR_BUFFER_BIT,
-    GL_QUADS, GL_NO_ERROR)
+from cygl.obsolete import glBegin, glEnd, glVertex2d
+from cygl.common import (glClear, glClearColor,glViewport,
+    glGetError, GL_COLOR_BUFFER_BIT, GL_QUADS, GL_NO_ERROR)
 import time
 
 class SquareWidget(GLCanvas):

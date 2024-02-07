@@ -1,6 +1,6 @@
 import tkinter
 from tkinter_gl import GLCanvas
-from cygl.legacy import glClear, glClearColor, GL_COLOR_BUFFER_BIT
+from cygl.common import glClear, glClearColor, GL_COLOR_BUFFER_BIT
 
 class GLView(GLCanvas):
     def __init__(self, parent, cnf={}, **kw):
