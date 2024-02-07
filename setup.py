@@ -39,41 +39,24 @@ extensions = cythonize([
     # length 1.
     Extension(
         name="cygl.legacy",
-        sources=["cython_src/cygl/legacy.pyx"],
+        sources=["src/cygl/legacy.pyx"],
         include_dirs=OpenGL_includes,
         extra_link_args=OpenGL_extra_link_args,
         ),
     Extension(
-        name="cygl.algebra3d",
-        sources=["cython_src/cygl/algebra3d.pyx"],
+        name="cygl.vec3",
+        sources=["src/cygl/vec3.pyx"],
         ),
     Extension(
         name="cygl.vertex_array",
-        sources=["cython_src/cygl/vertex_array.pyx"],
+        sources=["src/cygl/vertex_array.pyx"],
         include_dirs=OpenGL_includes,
         extra_link_args=OpenGL_extra_link_args,
         ),
     ])
 
-# extensions += cythonize(
-#     Extension(
-#         "cygl.vertex_array",
-#         ["cython_src/vertex_array.pyx"],
-#         include_dirs=OpenGL_includes,
-#         extra_link_args=OpenGL_extra_link_args,
-#         ),
-#         "cython_src/algebra3d.pyx"
-#     )
-
-# extensions += cythonize(
-#     Extension(
-#         "cygl.algebra3d",
-#         ["cython_src/algebra3d.pyx"]
-#         )
-#     )
-
 setup(
     ext_modules=extensions,
     packages=['cygl'],
-    package_dir={'cygl':'cython_src/cygl'}
+    package_dir={'cygl':'src/cygl'}
 )

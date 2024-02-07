@@ -10,7 +10,7 @@ dist:
 
 clean:
 	rm -rf build dist */*.egg-info */__pycache__ */*.pyc
-	rm -f cython_src/cygl/*.c
+	rm -f src/cygl/*.c
 
 testpypi-upload:
 	python3 -m twine upload --repository testpypi dist/*

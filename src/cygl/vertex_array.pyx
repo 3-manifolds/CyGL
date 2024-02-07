@@ -1,6 +1,6 @@
 # cython: language_level=3str
 
-from cygl.algebra3d cimport vec3
+from cygl.vec3 cimport vec3
 
 cdef class VertexArray():
     """An OpenGL Vertex Array."""

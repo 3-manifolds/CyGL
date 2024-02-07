@@ -1,4 +1,17 @@
 # cython: language_level=3str
+
+"""
+The vec3 class defined here represents a real 3-dimensional vector.
+
+We identify R^3 with its dual using their standard bases.  With these
+identifications the wedge product on the dual agrees with the cross
+product, and applying one vector, viewed as a linear functional, to
+another vector agrees with the dot product.  Therefore we implement
+the operator ^ as the cross product and the operator @ as the dot
+product.  The * operator is scalar multiplication, which can be done
+on either side.  The + and - operators represent vector addition and
+subtraction.  """
+
 from libc.math cimport sqrt
 
 cdef class vec3():
