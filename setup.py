@@ -43,6 +43,22 @@ extensions = cythonize(
         )
     )
 
+extensions += cythonize(
+    Extension(
+        "cygl.vertex_array",
+        ["cython_src/vertex_array.pyx"],
+        include_dirs=OpenGL_includes,
+        extra_link_args=OpenGL_extra_link_args,
+        )
+    )
+
+extensions += cythonize(
+    Extension(
+        "cygl.algebra3d",
+        ["cython_src/algebra3d.pyx"]
+        )
+    )
+
 setup(
     ext_modules = extensions
 )
