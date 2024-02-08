@@ -1,4 +1,6 @@
 # cython: language_level=3str
+# This file declares OpenGL functions which are available in all
+# versions of OpenGL.
 
 include "gl_types.pxi"
 

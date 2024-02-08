@@ -35,8 +35,8 @@ elif sys.platform == 'linux':
     OpenGL_extra_link_args = ['-lGL']
 
 extensions = cythonize([
-    # cythonize accepts a list of Extensions but their sources list must have
-    # length 1.
+    # cythonize accepts a list of Extensions but their sources list
+    # must have length 1.
     Extension(
         name="cygl.obsolete",
         sources=["src/cygl/obsolete.pyx"],
@@ -52,6 +52,10 @@ extensions = cythonize([
     Extension(
         name="cygl.vec3",
         sources=["src/cygl/vec3.pyx"],
+        ),
+    Extension(
+        name="cygl.hh",
+        sources=["src/cygl/hh.pyx"],
         ),
     Extension(
         name="cygl.vertex_array",

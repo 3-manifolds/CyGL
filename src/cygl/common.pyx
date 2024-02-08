@@ -17,3 +17,16 @@ def glClear(GLbitfield mask):
 
 def glViewport(GLint x, GLint y, GLsizei width, GLsizei height):
      _glViewport(x, y, width, height)
+
+#glEnable
+#glGenBuffers
+#glGenVertexArrays
+#glBindBuffer
+#glBindBufferBase
+#glBindVertexArray
+#glBufferSubData
+#glDrawElements
+#glDrawArrays
+#glAttachShader
+#glCompileShader
+#glLinkProgram
