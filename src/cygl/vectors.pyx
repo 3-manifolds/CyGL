@@ -4,15 +4,18 @@
 The classes Vec1, Vec2, Vec3 and Vec4 all support basic vector
 operations. The * operator is scalar multiplication, which can be done
 on either side.  The + and - operators represent vector addition and
-subtraction. The operator @ represents the dot product, even though
-it is commutative, since it is a matrix multiplication after
-transposing one side.
+subtraction. The operator %, which has the same precedence as *,
+represents the dot product.
 
-The Vec3 class also supports the cross product. We identify R^3 with
-its dual using their standard bases.  With these identifications the
-wedge product on the dual agrees with the cross product.  Therefore we
-implement the operator ^ as the cross product and.
-"""
+The Vec3 class also supports the cross product. If we identify R^3
+with its dual using their standard bases, the wedge product on the
+dual agrees with the cross product.  So it might be nice if we could
+implement the xor operator ^ as the cross product.  However, that does
+not work because xor has lower precedence than + and - in python,
+leading to surprising errors.  Instead we use @ for the cross product,
+which also correctly suggests that the cross product is not
+commutative.  """
+
 from libc.string cimport memcpy
 from libc.math cimport sqrt
 from cygl.vectors cimport *
@@ -87,7 +90,7 @@ cdef class Vec:
         cdef float *v = self._v
         return self.__class__(*(other*v[i] for i in range(self._size)))
 
-    def __matmul__(self, Vec other):
+    def __mod__(self, Vec other):
         if self._size != other._size:
             raise TypeError('Vectors have different sizes.')
         return c_dot(self._size, self._v, other._v)
@@ -134,34 +137,13 @@ cdef class Vec3(Vec):
         self._v[1] = y
         self._v[2] = z
 
-    def __add__(self, Vec3 other):
-        cdef float *L = self._v
-        cdef float *R = other._v
-        return Vec3(L[0] + R[0], L[1] + R[1], L[2] + R[2])
-
-    def __sub__(self, Vec3 other):
-        cdef float *L = self._v
-        cdef float *R = other._v
-        return Vec3(L[0] - R[0], L[1] - R[1], L[2] - R[2])
-
-    def __xor__(self, Vec3 other):
+    def __matmul__(self, Vec3 other):
+        """ The cross product!"""
         cdef float *L = self._v
         cdef float *R = other._v
         return Vec3(L[1] * R[2] - L[2] * R[1],
                     L[2] * R[0] - L[0] * R[2],
                     L[0] * R[1] - L[1] * R[0])
-
-    def __mul__(self, float other):
-        cdef float *v = self._v
-        return Vec3(other*v[0], other*v[1], other*v[2])
-
-    def __rmul__(self, float other):
-        cdef float *v = self._v
-        return Vec3(other*v[0], other*v[1], other*v[2])
-
-    def __abs__(self):
-        cdef float *v = self._v
-        return sqrt(v[0] * v[0] + v[1] * v[1] +v[2] * v[2])
 
     def __neg__(self):
         return Vec3(-self._v[0], -self._v[1], -self._v[2])

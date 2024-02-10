@@ -4,7 +4,8 @@
 Hamilton's quaternion numbers.
 
 The non-commutative multiplication operator is represented by @.
-Scalar multiplication is represented by *.
+Scalar multiplication is represented by *.  The inverse is given
+by the unary ~ operator.
 """
 
 from libc.math cimport sqrt
@@ -30,8 +31,8 @@ cdef class Quaternion():
         return Quaternion(self._re - other._re, self._im - other._im)
 
     def __matmul__(self, Quaternion other):
-        return Quaternion(self._re * other._re - self._im @ other._im,
-            self._re * other._im + self._im * other._re + self._im ^ other._im) 
+        return Quaternion(self._re * other._re - self._im % other._im,
+            self._re * other._im + self._im * other._re + self._im @ other._im) 
         
     def __mul__(self, float other):
         return Quaternion(other * self._re, other * self._im)
@@ -39,6 +40,9 @@ cdef class Quaternion():
     def __rmul__(self, float other):
         return Quaternion(other * self._re, other * self._im)
 
+    def __invert__(self):
+        return self.conjugate() * (1/(self @ self.conjugate()).real())
+    
     def __abs__(self):
         return sqrt(self._re * self._re + self._im @ self._im)
 
