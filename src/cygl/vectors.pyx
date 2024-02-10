@@ -13,15 +13,34 @@ its dual using their standard bases.  With these identifications the
 wedge product on the dual agrees with the cross product.  Therefore we
 implement the operator ^ as the cross product and.
 """
-
+from libc.string cimport memcpy
 from libc.math cimport sqrt
 from cygl.vectors cimport *
 
+cdef extern from *:
+    """
+    /* This C code will be quoted verbatim in the .c file output by Cython */
+    static inline float c_dot(int size, float *x, float *y) {
+        float result = 0.0f;
+        for (int i = 0; i < size; i++) {
+            result += x[i]*y[i];
+        }
+        return result;
+    }
+    static inline float c_abs(int size, float *x) {
+        float dot = 0.0f;
+        for (int i = 0; i < size; i++) {
+            dot += x[i]*x[i];
+        }
+        return sqrt(dot);
+    }
+    """
+    float c_dot(int size, float *x, float*y)
+    float c_abs(int size, float *x)
+
 cdef class Vec:
     cdef int write(self, float *buffer):
-        cdef int i
-        for i in range(self._size):
-            buffer[i] = self._v[i]
+        memcpy(buffer, self._v, self._size * sizeof(float))
         return self._size
 
     def __len__(self):
@@ -71,21 +90,13 @@ cdef class Vec:
     def __matmul__(self, Vec other):
         if self._size != other._size:
             raise TypeError('Vectors have different sizes.')
-        cdef float *L = self._v
-        cdef float *R = other._v
-        cdef float result = 0
-        cdef int i
-        for i in range(self._size):
-            result += L[i]*R[i]
-        return result
+        return c_dot(self._size, self._v, other._v)
 
     def __neg__(self):
         return self.__class__(*(-self._v[i] for i in range(self._size)))
 
     def __abs__(self):
-        cdef int i
-        cdef float *v = self._v
-        return sqrt(sum(v[i] * v[i] for i in range(self._size)))
+        return c_abs(self._size, self._v)
 
     def __repr__(self):
         return '<%s>'%', '.join(str(self._v[i]) for i in range(self._size))
@@ -94,31 +105,31 @@ cdef class Vec:
 
 cdef class Vec1(Vec):
     def __init__(self, float x=0.0):
+        self._v = &self._data
         self._size = 2
-        self._v = self._data
         self._v[0] = x
 
 cdef class Vec2(Vec):
     def __init__(self, float x=0.0, float y=0.0):
-        cdef int i
+        self._v = &self._data[0]
         self._size = 2
-        self._v = self._data
         self._v[0] = x
         self._v[1] = y
 
 cdef class Vec4(Vec):
     def __init__(self, float x=0.0, float y=0.0, float z=0.0, float w=1.0):
+        self._v = &self._data[0]
         self._size = 4
-        self._v = self._data
         self._v[0] = x
         self._v[1] = y
         self._v[2] = z
         self._v[3] = w
 
-cdef class Vec3(Vec):        
+cdef class Vec3(Vec):
+
     def __init__(self, float x=0.0, float y=0.0, float z=0.0):
+        self._v = &self._data[0]
         self._size = 3
-        self._v = self._data
         self._v[0] = x
         self._v[1] = y
         self._v[2] = z
