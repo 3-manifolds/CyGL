@@ -1,13 +1,14 @@
 # cython: language_level=3str
 
 """
-Hamilton's quaternions.  The non-commutative algebra multiplication
-operator is represented by @.  Scalar multiplication is represented
-by *.
+Hamilton's quaternion numbers.
+
+The non-commutative multiplication operator is represented by @.
+Scalar multiplication is represented by *.
 """
 
 from libc.math cimport sqrt
-from cygl.vec3 cimport Vec3
+from cygl.vectors cimport Vec3
 from cygl.hh cimport Quaternion
 
 cdef class Quaternion():
@@ -17,7 +18,7 @@ cdef class Quaternion():
         self._im = v
 
     def __repr__(self):
-        return '%f*h_1 + %f*h_I + %f*h_J + %f*h_K'%(self._re, *self._im)
+        return '%f*q_1 + %f*q_I + %f*q_J + %f*q_K'%(self._re, *self._im)
 
     def __add__(self, Quaternion other):
         return Quaternion(self._re + other._re, self._im + other._im)
@@ -47,7 +48,10 @@ cdef class Quaternion():
     def imag(self):
         return self._im
 
-h_1 = Quaternion(1, Vec3(0, 0, 0))
-h_I = Quaternion(0, Vec3(1, 0, 0))
-h_J = Quaternion(0, Vec3(0, 1, 0))
-h_K = Quaternion(0, Vec3(0, 0, 1))
+    def conjugate(self):
+        return Quaternion(self._re, -self._im)
+
+q_1 = Quaternion(1, Vec3(0, 0, 0))
+q_I = Quaternion(0, Vec3(1, 0, 0))
+q_J = Quaternion(0, Vec3(0, 1, 0))
+q_K = Quaternion(0, Vec3(0, 0, 1))

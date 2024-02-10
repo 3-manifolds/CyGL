@@ -50,12 +50,16 @@ extensions = cythonize([
         extra_link_args=OpenGL_extra_link_args,
         ),
     Extension(
-        name="cygl.vec3",
-        sources=["src/cygl/vec3.pyx"],
+        name="cygl.vectors",
+        sources=["src/cygl/vectors.pyx"],
         ),
     Extension(
         name="cygl.hh",
         sources=["src/cygl/hh.pyx"],
+        ),
+    Extension(
+        name="cygl.affine",
+        sources=["src/cygl/affine.pyx"],
         ),
     Extension(
         name="cygl.vertex_array",
