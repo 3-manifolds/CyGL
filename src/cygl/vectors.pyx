@@ -106,6 +106,9 @@ cdef class Vec:
 
     __str__ = __repr__
 
+    def copy(self):
+        return self.__class__(*self)
+
 cdef class Vec1(Vec):
     def __init__(self, float x=0.0):
         self._v = &self._data

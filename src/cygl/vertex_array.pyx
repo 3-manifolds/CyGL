@@ -2,9 +2,10 @@
 
 from cython.cimports.libc.stdlib import malloc, free, realloc
 from cygl.vectors cimport Vec, Vec1, Vec2, Vec3, Vec4
+from cygl.common import *
 import json
 
-cdef class VertexArray():
+cdef class VertexArray:
     """An OpenGL Vertex Array.
 
     This class manages a Vertex Array Object (VAO) and a Vertex Buffer
@@ -33,26 +34,39 @@ cdef class VertexArray():
         'vec4'  : Vec4(0.0, 0.0, 0.0, 1.0),
         }
 
-    vec_sizes = {'vec1' : 1, 'vec2' : 2, 'vec3' : 3, 'vec4' : 4}
+    dimensions = {'vec1' : 1, 'vec2' : 2, 'vec3' : 3, 'vec4' : 4}
+    
+    def __init__(self, **kwargs):
+        self.gl_attributes = kwargs
+        self.attribute_size = {} 
+        for key, value in self.gl_attributes.items():
+            if value not in self.defaults:
+                valid = ' '.join(self.defaults.keys())
+                raise ValueError("Valid argument values are: %s" % valid)
+            size = self.dimensions[value]
+            self.record_size += size
+            self.attribute_size[key] = size
+        self.vertex_defaults = {
+            attr: self.defaults[self.gl_attributes[attr]]
+            for attr in self.gl_attributes}
 
-    def __cinit__(self):
-        pass
+    def __dealloc__(self):
+        if self.vbo:
+            glDeleteBuffer(self.vbo)
+            glDeleteVertexArray(self.vao)
+        if self.vbo_data:
+            free(self.vbo_data)
 
-    def __dealloc(self):
-        if self.buffer_data:
-            print('freeing buffer')
-            free(self.buffer_data)
-
-    cdef save_vertex(self, vertex):
+    cpdef _save_vertex(self, vertex):
         cdef float *buf
         cdef int pos
-        cdef int size = self.buffer_size + self.record_size
+        cdef int size = self.vbo_size + self.record_size
         cdef Vec vec
-        if self.record_count * self.record_size >= self.buffer_size:
+        if self.record_count * self.record_size >= self.vbo_size:
             print("calling realloc")
-            self.buffer_data = <float *> realloc(self.buffer_data,
+            self.vbo_data = <float *> realloc(self.vbo_data,
                 2 * size * sizeof(float))
-            self.buffer_size = 2 * size
+            self.vbo_size = 2 * size
         if vertex.id < 0:
             print('adding new vertex')
             pos = self.record_count * self.record_size
@@ -63,42 +77,8 @@ cdef class VertexArray():
             pos = vertex.id * self.record_size
         for key in self.gl_attributes:
             vec = getattr(vertex, key)
-            buf = &self.buffer_data[pos]
+            buf = &self.vbo_data[pos]
             pos += vec.write(buf)
-    
-    def __init__(self, **kwargs):
-        self.gl_attributes = kwargs
-        self.attribute_size = {} 
-        for key, value in self.gl_attributes.items():
-            if value not in self.defaults:
-                valid = ' '.join(self.defaults.keys())
-                raise ValueError("Valid argument values are: %s" % valid)
-            size = self.vec_sizes[value]
-            self.record_size += size
-            self.attribute_size[key] = size
-        defaults = {attr: self.defaults[self.gl_attributes[attr]]
-                        for attr in self.gl_attributes}
-
-        def _vertex_init(vertex, **vertex_kwargs):
-            vertex_attributes = defaults.copy()
-            vertex_attributes.update(vertex_kwargs)
-            if len(vertex_attributes) != len(defaults):
-                raise ValueError("Invalid Vertex attribute")
-            for attr in vertex_attributes:
-                if len(vertex_attributes[attr]) != len(defaults[attr]):
-                    raise ValueError('Value of %s should have length %d.'%(
-                        attr, len(defaults[attr])))
-                setattr(vertex, attr, vertex_attributes[attr])
-
-        def _vertex_save(vertex):
-            self.save_vertex(vertex)
-
-        self.Vertex = type('Vertex', (object,), {
-            '__init__' : _vertex_init,
-            '_array' : self,
-            'id' : -1,
-            'save' : _vertex_save,
-            })
 
     def __getitem__(self, int key):
         """Returns a single buffer record represented as a dict."""
@@ -111,14 +91,44 @@ cdef class VertexArray():
         result = {}
         for attr in self.gl_attributes:
             size = self.attribute_size[attr]
-            result[attr] = [self.buffer_data[n + m] for m in range(size)]
+            result[attr] = [self.vbo_data[n + m] for m in range(size)]
             n += size
         return result
 
+    cdef init_array(self):
+        cdef int dimension
+        # This will segfault if there is no GL context.
+        self.vbo = glGenBuffer()
+        self.vao = glGenArray()
+        glBindVertexArray(self.vao)
+        for n, dimension in enumerate(self.attribute_size.values()):
+            glVertexAttribPointer(
+                n,                # attribute index
+                dimension,        # size
+                GL_FLOAT,         # type
+                GL_FALSE,         # normalized
+                0,                # stride (0 means "tightly packed")
+                0)           # offset of the first element in the buffer
+    
     def dumps(self):
         cdef int n
         data = [self[n] for n in range(self.record_count)]
-        return json.dumps(data, indent=2)
+        return json.dumps(data)
+
+    def bind(self):
+        if self.vbo == 0:
+            # This will segfault if there is no GL context.
+            self.vbo = glGenBuffer()
+        glBindBuffer(GL_ARRAY_BUFFER, self.vbo)
+        glBindVertexArray(self.vao)
+
+    def load(self):
+        # self.bind()
+        # glBufferData(GL_ARRAY_BUFFER,
+        #    <GLsizeiptr>num_bytes,
+        #    verts,
+        #    GL_STATIC_DRAW)
+        pass
 
 # Local Variables:
 # mode: Cython
