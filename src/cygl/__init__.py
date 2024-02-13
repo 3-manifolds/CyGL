@@ -12,13 +12,18 @@ class Vertex():
         size = array.attribute_size
         for key in kwargs:
             try:
-                if len(key) != size[key]:
+                if len(kwargs[key]) != size[key]:
                     raise ValueError('%s should have size %d'%(key, size[key]))
             except IndexError:
                 raise AttributeError('Invalid attribute %s'%key)
         defaults = array.vertex_defaults
         for attr in defaults:
             setattr(self, attr, kwargs.get(attr, defaults[attr].copy()))
+
+    def __repr__(self):
+        attributes = [(k, v) for k, v in self.__dict__.items()
+                          if k in self._array.gl_attributes]
+        return 'Vertex(%s)' % ', '.join('%s=%s' % item for item in attributes)
 
     def save(self):
         self._array._save_vertex(self)

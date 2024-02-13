@@ -1,9 +1,10 @@
+include "gl_types.pxi"
 
 cdef class VertexArray:
-    cdef int vbo
+    cdef GLuint vbo
     cdef int vbo_size
-    cdef float *vbo_data
-    cdef int vao
+    cdef GLfloat *vbo_data
+    cdef GLuint vao
     cdef int record_size
     cdef int record_count
     cdef public attribute_size

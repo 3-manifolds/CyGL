@@ -20,38 +20,67 @@ def glClear(GLbitfield mask):
 def glViewport(GLint x, GLint y, GLsizei width, GLsizei height):
      _glViewport(x, y, width, height)
 
-# The GL functions glGenBuffers and glDeleteBuffers are
-# replaced by glGenBuffer and glDeleteBuffer which deal with
-# only one buffer at a time.
+# We only need python wrappers for functions that will be called
+# from user code.  Commenting these out for now.
+# def glGenBuffer():
+#     cdef GLuint buffer
+#     _glGenBuffers(1, &buffer)
+#     return buffer
+#
+# def glDeleteBuffer(GLuint buffer):
+#     _glDeleteBuffers(1, &buffer)
+#
+# def glGenVertexArray():
+#     cdef GLuint array
+#     _glGenVertexArrays(1, &array)
+#     return array
+#
+# def glDeleteVertexArray(GLuint array):
+#     _glDeleteVertexArrays(1, &array)
+#
+# def glBindBuffer(GLenum target, GLuint buffer):
+#     _glBindBuffer(_GL_ARRAY_BUFFER, buffer)
+#
+# def glBindVertexArray(GLuint array):
+#     _glBindVertexArray(array)
+#
+# def glCreateShader(GLenum shaderType):
+#     _glCreateShader(shaderType)
+#
+# def glShaderSource(GLuint shader, GLsizei count, string):
+#     cdef GLint length = 0
+#     cdef const GLchar * const *c_string = string
+#     _glShaderSource(shader, count, c_string, &length)
+#     return length
+#
+# def glCompileShader(GLuint shader):
+#     _glCompileShader(shader)
+#
+# def glAttachShader(GLuint program, GLuint shader):
+#     _glAttachShader(program, shader)
+#
+# def glLinkProgram(GLuint program):
+#     _glLinkProgram(program)
+#
+# def glGetShaderiv(GLuint shader, GLenum pname, params):
+#     cdef GLint *c_params = <GLint *>malloc(len(params)*sizeof(GLuint))
+#     cdef int i
+#     for i in range(len(params)):
+#         c_params[i] = <int>params[i]
+#     _glGetShaderiv(shader, pname, c_params)
+#     free(c_params)
+    
+# def glGetShaderInfoLog(GLuint shader, GLsizei maxLength):
+#      cdef GLsizei length
+#      cdef GLchar *infoLog = <GLchar *>malloc(maxLength)
+#      _glGetShaderInfoLog(shader, maxLength, &length, infoLog)
+#      result = str(infoLog)
+#      free(infoLog)
+#      return result
+     
 
-def glGenBuffer():
-    cdef GLuint buffer
-    _glGenBuffers(1, &buffer)
-    return buffer
-
-def glDeleteBuffer(GLuint buffer):
-    _glDeleteBuffers(1, &buffer)
-
-def glGenVertexArray():
-    cdef GLuint array
-    _glGenVertexArrays(1, &array)
-    return array
-
-def glDeleteVertexArray(GLuint array):
-    _glDeleteVertexArrays(1, &array)
-
-def glBindBuffer(GLenum target, GLuint buffer):
-    _glBindBuffer(_GL_ARRAY_BUFFER, buffer)
-
-def glBindVertexArray(GLuint array):
-    _glBindVertexArray(array)
-        
 #glEnable
-
 #glBindBufferBase
 #glBufferSubData
 #glDrawElements
 #glDrawArrays
-#glAttachShader
-#glCompileShader
-#glLinkProgram
