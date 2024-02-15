@@ -20,6 +20,19 @@ def glClear(GLbitfield mask):
 def glViewport(GLint x, GLint y, GLsizei width, GLsizei height):
      _glViewport(x, y, width, height)
 
+cdef gl_strings = {
+    'GL_VERSION' : _GL_VERSION,
+    'GL_SHADING_LANGUAGE_VERSION' : _GL_SHADING_LANGUAGE_VERSION,
+    }
+    
+def glGetString(gl_string_name):
+    cdef const char *result
+    try:
+        result = <const char *> _glGetString(gl_strings[gl_string_name])
+    except IndexError:
+        raise ValueError('Unknown GL string %s' % gl_string_name)
+    return result.decode('utf-8')
+
 # We only need python wrappers for functions that will be called
 # from user code.  Commenting these out for now.
 # def glGenBuffer():
