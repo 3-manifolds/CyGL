@@ -1,7 +1,9 @@
 #ifdef _WIN32
 #include "windows.h"
 #include "wingdi.h"
-#include "GL/gl.h"
+#define GLEW_STATIC
+#include "GL/glew.h"
+#include "GL/GL.h"
 #endif
 
 #ifdef __linux

@@ -1,3 +1,5 @@
+# cython: language_level=3str
+
 include "gl_types.pxi"
 
 cdef class VertexArray:

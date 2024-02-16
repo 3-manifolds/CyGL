@@ -29,7 +29,10 @@ if sys.platform == 'darwin':
     OpenGL_extra_link_args += macOS_link_args
 
 elif sys.platform == 'win32':
-    OpenGL_extra_link_args = ['opengl32.lib']
+    OpenGL_includes += ['glew/include']
+    OpenGL_extra_link_args = [
+        'glew/lib/Release/x64/glew32s.lib',
+        'opengl32.lib']
 
 elif sys.platform == 'linux':
     OpenGL_extra_link_args = ['-lGL']
@@ -58,21 +61,17 @@ extensions = cythonize([
         sources=["src/cygl/hh.pyx"],
         ),
     Extension(
-        name="cygl.affine",
-        sources=["src/cygl/affine.pyx"],
-        ),
-    Extension(
         name="cygl.vertex_array",
         sources=["src/cygl/vertex_array.pyx"],
         include_dirs=OpenGL_includes,
         extra_link_args=OpenGL_extra_link_args,
         ),
-    Extension(
-        name="cygl.program",
-        sources=["src/cygl/program.pyx"],
-        include_dirs=OpenGL_includes,
-        extra_link_args=OpenGL_extra_link_args,
-        ),
+    # Extension(
+    #     name="cygl.program",
+    #     sources=["src/cygl/program.pyx"],
+    #     include_dirs=OpenGL_includes,
+    #     extra_link_args=OpenGL_extra_link_args,
+    #     ),
     Extension(
         name="cygl.gl_context",
         sources=["src/cygl/gl_context.pyx"],

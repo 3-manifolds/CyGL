@@ -31,6 +31,9 @@ def glGetString(gl_string_name):
         result = <const char *> _glGetString(gl_strings[gl_string_name])
     except IndexError:
         raise ValueError('Unknown GL string %s' % gl_string_name)
+    if result == NULL:
+        raise RuntimeError(
+            'NULL pointer returned.  Is there a valid GL context?')
     return result.decode('utf-8')
 
 # We only need python wrappers for functions that will be called
