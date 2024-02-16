@@ -67,7 +67,7 @@ static int initialize_context(void) {
 #include <signal.h>
 #include <setjmp.h>
 
-static sighandler_t saved_segv_handler = SIG_DFL;
+static sig_t saved_segv_handler = SIG_DFL;
 static jmp_buf jmp_env;
 
 static void jumper(int signum) {
