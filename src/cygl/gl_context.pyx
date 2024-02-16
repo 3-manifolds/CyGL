@@ -117,6 +117,6 @@ def gl_context_exists():
         return False
     return True
 
-def gl_init_context():
+def init_gl_context():
    return (initialize_context() == 0)
 
