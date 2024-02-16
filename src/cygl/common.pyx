@@ -2,6 +2,12 @@
 
 from cython.cimports.libc.stdlib import malloc, free
 from cygl.common cimport *
+from cygl.gl_context import gl_context_exists, init_gl_context
+
+if not gl_context_exists():
+    raise RuntimeError("A GL context must be created before importing cygl.common.")
+else:
+    init_gl_context()
 
 GL_COLOR_BUFFER_BIT = _GL_COLOR_BUFFER_BIT
 GL_QUADS = _GL_QUADS

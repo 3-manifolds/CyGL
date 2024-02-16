@@ -1,9 +1,6 @@
 import tkinter
 from tkinter import ttk
 from tkinter_gl import GLCanvas
-from cygl.obsolete import glBegin, glEnd, glVertex2d
-from cygl.common import (glClear, glClearColor,glViewport,
-    glGetError, GL_COLOR_BUFFER_BIT, GL_QUADS, GL_NO_ERROR)
 import time
 
 class SquareWidget(GLCanvas):
@@ -97,23 +94,23 @@ class Window(tkinter.Toplevel):
         self.after(5, self.advance)
 
 if __name__ == '__main__':
-
     root = tkinter.Tk()
-    window = Window()
-
     root.geometry('300x50+600+100')
-
+    # This causes a GL context to be created.
+    GLCanvas(root)
+    # Now we can import the GL functions that we need.
+    from cygl.obsolete import glBegin, glEnd, glVertex2d
+    from cygl.common import (glClear, glClearColor, glViewport,
+        glGetError, GL_COLOR_BUFFER_BIT, GL_QUADS, GL_NO_ERROR)
+    window = Window()
     label = ttk.Label(root, text="Zoom: ", padding=(10, 0, 0, 0))
     label.grid(row=0, column=0)
-    
     slider = ttk.Scale(root,
                        orient=tkinter.HORIZONTAL,
                        command=window.set_size,
                        value=window.square_widget.size)
     slider.grid(row=0, column=1, padx=20, pady=20, sticky='nsew')
     root.columnconfigure(1, weight=1)
-
     print("Using OpenGL", window.square_widget.gl_version())
-
     root.mainloop()
 

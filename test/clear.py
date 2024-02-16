@@ -1,6 +1,5 @@
 import tkinter
 from tkinter_gl import GLCanvas
-from cygl.common import glClear, glClearColor, GL_COLOR_BUFFER_BIT
 
 class GLView(GLCanvas):
     def __init__(self, parent, cnf={}, **kw):
@@ -27,6 +26,7 @@ class GLView(GLCanvas):
 if __name__ == '__main__':
     root = tkinter.Tk()
     surface = GLView(root)
+    from cygl.common import glClear, glClearColor, GL_COLOR_BUFFER_BIT
     print("Using OpenGL", surface.gl_version())
     surface.pack(expand=True, fill='both', padx=50, pady=50)
     root.mainloop()
