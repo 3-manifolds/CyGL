@@ -91,8 +91,7 @@ static int check_for_context(void) {
 
     int jmp_return = setjmp(jmp_env);
     if (jmp_return == 0) {
-        char *version = (char *) glGetString(GL_VERSION);
-	printf("%s\n", version);
+        glGetString(GL_VERSION);
     }
     return jmp_return;
 }
