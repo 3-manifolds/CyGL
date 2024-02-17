@@ -5,17 +5,17 @@ This extension module provides one Python function named gl_context_exists.
 It returns True or False according to whether an OpenGL context has been
 created.
 
-On linux and macOS, when the library is first loaded it is in a state
-where its pointer to the current GL context is NULL.  Worse, no GL function
-tests that pointer.  Instead, a call to any GL function when the library is
-in its initial state will produce a segfault. On Windows, at least
-some openGL calls can run without a segfault but they produce errors.
-Ror example, glGetString will return NULL.
+On macOS, when the OpenGL library is first loaded it is in a state where its
+pointer to the current GL context is NULL.  Worse, no GL function tests that
+pointer.  Instead, a call to any GL function when the library is in its
+initial state will produce a segfault. On Windows and linux, at least some
+openGL calls can run without a segfault but they produce errors.  Ror example,
+glGetString will return NULL.
 
-The gl_context_exists function works on Unix by installing a SIGSEGV
-handler and then calling GLGetString.  If the handler gets called then
-the function returns False.  Otherwise it returns True.  On Windows
-it returns false if glGetString return NULL and True otherwise.
+The gl_context_exists function works on Unix by installing a SIGSEGV handler
+and then calling GLGetString.  If the handler gets called or a NULL string is
+returned then the function returns False.  Otherwise it returns True.  On
+Windows it returns false if glGetString return NULL and True otherwise.
 
 Handling a SIGSEGV signal is delicate business.  Most handlers simply try to
 do some custom clean-up and/or error reporting and then terminate the program.
@@ -83,6 +83,8 @@ static void clear_handler(void) {
 
 static int check_for_context(void) {
 
+    const char *version = NULL;
+
     /*
      * The longjmp jumps to the asssignment below, but with the return
      * value of setjmp set to 1 instead of 0.
@@ -90,9 +92,12 @@ static int check_for_context(void) {
 
     int jmp_return = setjmp(jmp_env);
     if (jmp_return == 0) {
-        glGetString(GL_VERSION);
+        version = glGetString(GL_VERSION);
     }
-    return jmp_return;
+    if (jmp_return != 0 || version == NULL) {
+        return 1;
+    } 
+    return 0;
 }
 
 static int initialize_context(void) {
