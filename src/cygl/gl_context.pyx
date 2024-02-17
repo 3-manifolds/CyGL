@@ -55,11 +55,10 @@ static int check_for_context(void) {
 
 static int initialize_context(void) {
     GLenum err = glewInit();
-    if (GLEW_OK != err) {
-        fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+    if (err != GLEW_OK) {
+        return 1;
     }
-    fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
-    return err;
+    return 0;
 }
 
 #else
@@ -109,14 +108,23 @@ static int initialize_context(void) {
     cdef int check_for_context()
     cdef int initialize_context()
 
+# Module level python variable to record if the context has been initialized:
+initialized = False 
+
 def gl_context_exists():
     set_handler()
     result = check_for_context()
     clear_handler()
-    if result:
-        return False
-    return True
+    if result == 0:
+        return True
+    return False
 
 def init_gl_context():
-   return (initialize_context() == 0)
-
+    global initialized
+    if not initialized:
+        result = initialize_context()
+        if result == 0:
+            initialized = True
+            return True
+        return False
+    return True
