@@ -1,6 +1,5 @@
 # cython: language_level=3str
 
-from cython.cimports.libc.stdlib import malloc, free, realloc
 from cygl.vectors cimport Vec, Vec1, Vec2, Vec3, Vec4
 from cygl.common cimport *
 from cygl.common import *
@@ -12,19 +11,17 @@ cdef class VertexArray:
 
     By definition, "An OpenGL Object is an OpenGL construct that contains some
     state" of the GL context.  To change the state of the context an object is
-    "bound" to the contex.
+    "bound" to the context.
 
     This class manages a Vertex Array Object (VAO) and a Vertex Buffer Object
     (VBO).  It only supports the "combined format" because the "separate
     format" is not supported by Apple.  This means that all vertex attributes
     are stored in the one buffer.  The buffer is structured as a sequence of
-    records, one per buffer.
+    records, one per vertex.
 
     A VertexArray is instantiated with keyword arguments which give the names of
     the vertex attributes. The value assigned to a keyword specifies the GL type
-    of the attribute.  A VertexArray object has a special attribute named Vertex
-    which is a Python class whose objects have the specified attributes.  All
-    attributes are floats or vectors of floats.
+    of the attribute.  All attributes are floats or vectors of floats.
 
     An object of the class Vertex must be instantiated with a VertexArray, and
     holds a reference to the VertexArray.  The attributes of the Vertex are

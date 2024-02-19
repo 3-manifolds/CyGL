@@ -66,12 +66,12 @@ extensions = cythonize([
         include_dirs=OpenGL_includes,
         extra_link_args=OpenGL_extra_link_args,
         ),
-    # Extension(
-    #     name="cygl.program",
-    #     sources=["src/cygl/program.pyx"],
-    #     include_dirs=OpenGL_includes,
-    #     extra_link_args=OpenGL_extra_link_args,
-    #     ),
+    Extension(
+        name="cygl.uniform_buffer",
+        sources=["src/cygl/uniform_buffer.pyx"],
+        include_dirs=OpenGL_includes,
+        extra_link_args=OpenGL_extra_link_args,
+        ),
     Extension(
         name="cygl.gl_context",
         sources=["src/cygl/gl_context.pyx"],

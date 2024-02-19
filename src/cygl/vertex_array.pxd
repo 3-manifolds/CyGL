@@ -1,4 +1,5 @@
 # cython: language_level=3str
+from cython.cimports.libc.stdlib cimport malloc, free, realloc
 
 include "gl_types.pxi"
 
