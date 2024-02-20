@@ -1,6 +1,5 @@
 # cython: language_level=3str
 
-from cygl.vectors cimport Vec, Vec1, Vec2, Vec3, Vec4
 from cygl.common cimport *
 from cygl.common import *
 import cygl
@@ -11,6 +10,13 @@ cdef class UBOElement:
         self.load_data(value)
 
     cdef load_data(self, value):
+        """Loads uniform data from a python object.
+
+        The data is written to the C buffer with std140 padding and
+        alignment.  The python object must support approriate indexing
+        for the shape of the struct element, or an IndexError will be
+        raised.
+        """        
         cdef size_t stride
         if self.array_length == 0:
             self.save_item(value, 0)
@@ -20,11 +26,7 @@ cdef class UBOElement:
                 self.save_item(entry, n*stride)
             
     cdef save_item (self, value, int offset):
-        """ Writes python data to the C buffer
-
-        Will raise an IndexError if the shape of the python data does
-        not match the shape of this object.
-        """
+        """ Writes python data for one basic type to the C buffer"""
         cdef int i
         cdef int j
         cdef int rows
