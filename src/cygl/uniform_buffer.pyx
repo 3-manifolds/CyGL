@@ -8,14 +8,20 @@ import json
 
 cdef class UBOElement:
     def __init__(self, value):
-        cdef int stride = self.array_stride // FLOAT_SIZE
+        cdef size_t stride
         if self.array_length == 0:
-            self.save(value, 0)
+            self.write_data(value, 0)
         else:
+            stride = self.array_stride // FLOAT_SIZE
             for n, entry in enumerate(value):
-                self.save(entry, n*stride)
+                self.write_data(entry, n*stride)
             
-    cdef save(self, value, int offset):
+    cdef write_data (self, value, int offset):
+        """ Writes python data to the C buffer
+
+        Will raise an IndexError if the shape of the python data does
+        not match the shape of this object.
+        """
         cdef int i
         cdef int j
         cdef int rows
@@ -34,20 +40,6 @@ cdef class UBOElement:
             for i in range(columns):
                 for j in range(rows):
                     self.data[offset + i * padded_rows + j] = float(value[j][i])
-    
-    cpdef aligned_offset(self, int offset):
-        cdef int alignment = self.alignment
-        if self.array_length > 0:
-            alignment = self.round_up(alignment, 16)
-        return self.round_up(offset, alignment)
-
-    cpdef padded_size(self):
-        """The size in bytes, including padding."""
-        cdef size = self.padded_shape[0]*self.padded_shape[1]*FLOAT_SIZE
-        cdef stride = self.round_up(size, 4*FLOAT_SIZE)
-        if self.array_length == 0:
-            return self.round_up(size, self.alignment)
-        return self.round_up(self.array_length * stride, 4*FLOAT_SIZE)
 
     def __dealloc__(self):
         if self.data:
@@ -56,7 +48,7 @@ cdef class UBOElement:
 
     def dump(self):
         cdef int i
-        for i in range(self.padded_size() // FLOAT_SIZE):
+        for i in range(self.padded_size // FLOAT_SIZE):
             print(self.data[i])
 
 cdef class UBOFloat(UBOElement):
