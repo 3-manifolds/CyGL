@@ -17,11 +17,15 @@ cdef class UBOElement:
     cdef int shape[2]
     cdef int padded_shape[2]
     cdef size_t padded_size
+    cdef load_data(self, value)
+    cdef save_item(self, value, int offset)
+
     cdef inline round_up(self, int value, int unit):
         cdef result = unit * (value // unit)
         if value % unit:
             result += unit
         return result
+
     cdef inline alloc_data(self, value, alignment=0, shape=(0,0),
             padded_shape=(0,0)):
         # Called by __cinit__ methods of subclasses of UBOElement.
@@ -46,4 +50,3 @@ cdef class UBOElement:
             self.padded_size = self.round_up(
                 self.array_length * self.array_stride, 4*FLOAT_SIZE)
         self.data = <float *> calloc(self.padded_size, 1)
-    cdef write_data(self, value, int offset)

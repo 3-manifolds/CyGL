@@ -8,15 +8,18 @@ import json
 
 cdef class UBOElement:
     def __init__(self, value):
+        self.load_data(value)
+
+    cdef load_data(self, value):
         cdef size_t stride
         if self.array_length == 0:
-            self.write_data(value, 0)
+            self.save_item(value, 0)
         else:
             stride = self.array_stride // FLOAT_SIZE
             for n, entry in enumerate(value):
-                self.write_data(entry, n*stride)
+                self.save_item(entry, n*stride)
             
-    cdef write_data (self, value, int offset):
+    cdef save_item (self, value, int offset):
         """ Writes python data to the C buffer
 
         Will raise an IndexError if the shape of the python data does
