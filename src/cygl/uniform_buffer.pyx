@@ -52,7 +52,7 @@ cdef class UBOElement:
             free(self.data)
 
     def dump(self):
-        cdef int i
+        cdef size_t i
         for i in range(self.padded_size // FLOAT_SIZE):
             print(self.data[i])
 

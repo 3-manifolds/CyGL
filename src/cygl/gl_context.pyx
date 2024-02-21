@@ -83,7 +83,7 @@ static void clear_handler(void) {
 
 static int check_for_context(void) {
 
-    const char *version = NULL;
+    const GLubyte *version = NULL;
 
     /*
      * The longjmp jumps to the asssignment below, but with the return
@@ -100,10 +100,19 @@ static int check_for_context(void) {
     return 0;
 }
 
+#ifdef __APPLE__
 static int initialize_context(void) {
     return 0;
 }
-
+#else
+static int initialize_context(void) {
+    GLenum err = glewInit();
+    if (err != GLEW_OK) {
+        return 1;
+    }
+    return 0;
+}
+#endif
 #endif
 
 """

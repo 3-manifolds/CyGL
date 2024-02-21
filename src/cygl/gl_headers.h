@@ -7,7 +7,9 @@
 #endif
 
 #ifdef __linux
-#include "GL/gl.h"
+#define GLEW_STATIC
+#include "GL/glew.h"
+#include <GL/gl.h>
 #endif
 
 #ifdef __APPLE__

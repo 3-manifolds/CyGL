@@ -35,7 +35,9 @@ elif sys.platform == 'win32':
         'opengl32.lib']
 
 elif sys.platform == 'linux':
-    OpenGL_extra_link_args = ['-lGL']
+    OpenGL_extra_link_args = [
+        '/usr/lib/x86_64-linux-gnu/libGLEW.a',
+        '-lGL']
 
 extensions = cythonize([
     # cythonize accepts a list of Extensions but their sources list
