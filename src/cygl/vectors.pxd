@@ -12,7 +12,7 @@ cdef class Vec2(Vec):
     cdef float _data[2]
 
 cdef class Vec3(Vec):
-    cdef float _data[3]
+    cdef float _data[4]
 
 cdef class Vec4(Vec):
     cdef float _data[4]

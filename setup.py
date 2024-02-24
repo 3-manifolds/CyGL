@@ -59,6 +59,10 @@ extensions = cythonize([
         sources=["src/cygl/vectors.pyx"],
         ),
     Extension(
+        name="cygl.matrices",
+        sources=["src/cygl/matrices.pyx"],
+        ),
+    Extension(
         name="cygl.hh",
         sources=["src/cygl/hh.pyx"],
         ),

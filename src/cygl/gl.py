@@ -1,9 +1,10 @@
-__version__ = '1.0a0'
-from cygl.vectors import Vec1, Vec2, Vec3, Vec4
-from cygl.hh import Quaternion, q_1, q_I, q_J, q_K
+"""
+Importing this module requires first creating an OpenGL context.
+"""
 
-__all__ = ["Vec1", "Vec2", "Vec3", "Vec4", "Quaternion",
-            "q_1", "q_I", "q_J", "q_K"]
+from cygl.vertex_array import VertexArray
+from cygl.gl_context import gl_context_exists
+__all__ = ["VertexArray","Vertex", "gl_context_exists"]
 
 class Vertex():
     def __init__(self, array, **kwargs):

@@ -52,7 +52,7 @@ cdef class UBOElement:
             free(self.data)
 
     def dump(self):
-        cdef size_t i
+        cdef int i
         for i in range(self.padded_size // FLOAT_SIZE):
             print(self.data[i])
 
@@ -92,7 +92,7 @@ cdef class UBOMat4(UBOElement):
     def __cinit__(self, value):
         self.alloc_data(value, 4*FLOAT_SIZE, (4,4), (4,4))
 
-cdef class UniformBuffer:
+class UniformBuffer:
     """An OpenGL Uniform Buffer Object.
 
     By definition, "An OpenGL Object is an OpenGL construct that contains some
@@ -114,4 +114,13 @@ cdef class UniformBuffer:
     C buffer managed by the UniformBuffer.  The data in the C buffer gets
     uploaded to the GPU by the UniformBuffer.
     """
-    pass
+
+    member_classes = {UBOFloat, UBOVec2, UBOVec3, UBOVec4, UBOMat2x3, UBOMat3x2,
+                          UBOMat3, UBOMat4}
+
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            if type(value) not in self.member_classes:
+                raise ValueError("Invalid type %s for uniform variable." % valid)
+            setattr(self, key, value)
+

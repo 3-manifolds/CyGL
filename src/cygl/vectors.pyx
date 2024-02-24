@@ -116,29 +116,46 @@ cdef class Vec1(Vec):
         self._v[0] = x
 
 cdef class Vec2(Vec):
-    def __init__(self, float x=0.0, float y=0.0):
+    def __init__(self, *args):
+        cdef int i, nargs = len(args)
         self._v = &self._data[0]
         self._size = 2
-        self._v[0] = x
-        self._v[1] = y
+        if nargs == 0:
+            return
+        if nargs > 2:
+            raise ValueError('Too many input values for a Vec2.')
+        for i in range(nargs):
+            self._v[i] = args[i]
 
 cdef class Vec4(Vec):
-    def __init__(self, float x=0.0, float y=0.0, float z=0.0, float w=1.0):
+    def __init__(self, *args):
+        cdef int i, nargs = len(args)
         self._v = &self._data[0]
         self._size = 4
-        self._v[0] = x
-        self._v[1] = y
-        self._v[2] = z
-        self._v[3] = w
+        if nargs == 0:
+            return
+        if nargs > 4:
+            raise ValueError('Too many input values for a Vec4.')
+        for i in range(nargs):
+            self._v[i] = args[i]
+        if nargs < 4:
+            self._v[3] = 1.0
 
 cdef class Vec3(Vec):
 
-    def __init__(self, float x=0.0, float y=0.0, float z=0.0):
+    def __cinit__(self):
+        self._data[3] = 1.0
+
+    def __init__(self, *args):
+        cdef int i, nargs = len(args)
         self._v = &self._data[0]
         self._size = 3
-        self._v[0] = x
-        self._v[1] = y
-        self._v[2] = z
+        if nargs == 0:
+            return
+        if nargs > 3:
+            raise ValueError('Too many input values for a Vec3.')
+        for i in range(nargs):
+            self._v[i] = args[i]
 
     def __matmul__(self, Vec3 other):
         """ The cross product!"""
